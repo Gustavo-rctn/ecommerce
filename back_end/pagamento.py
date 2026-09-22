@@ -14,11 +14,8 @@ os.makedirs(PASTA_DATABASE, exist_ok=True)
 
 
 
-# PERSISTÊNCIA E OPERAÇÕES DO BANCO DE DADOS
-# =========================================================================================================
 
 def inicializar_banco_pagamentos():
-    """Cria a tabela de pagamentos no SQLite se não existir."""
     conexao = sqlite3.connect(CAMINHO_BANCO)
     cursor = conexao.cursor()
     cursor.execute("""
@@ -37,7 +34,6 @@ def inicializar_banco_pagamentos():
 
 
 def salvar_pagamento_no_banco(email: str, valor: float, forma_pagamento: str, status: str, codigo_transacao: str):
-    """Insere a transação financeira no banco de dados."""
     conexao = sqlite3.connect(CAMINHO_BANCO)
     cursor = conexao.cursor()
     
@@ -52,12 +48,8 @@ def salvar_pagamento_no_banco(email: str, valor: float, forma_pagamento: str, st
     conexao.close()
 
 
-
-# REGRAS DE NEGÓCIO E VALIDAÇÕES
-# =========================================================================================================
-
 def validar_pix(valor: float) -> tuple[float, str]:
-    """Valida pagamento PIX, aplica 5% de desconto e gera o Copia e Cola."""
+    
     if not isinstance(valor, (int, float)):
         raise ValueError("O valor da compra deve ser numérico.")
     
@@ -102,9 +94,6 @@ def validar_boleto(valor: float) -> tuple[float, str]:
 
 
 
-# FLUXO PRINCIPAL (ORQUESTRADOR)
-# =========================================================================================================
-
 def processar_pagamento(email: str, forma_pagamento: str, valor: float, **dados_adicionais) -> dict:
     """Função principal que orquestra a validação e salva no banco de dados."""
     
@@ -145,14 +134,11 @@ def processar_pagamento(email: str, forma_pagamento: str, valor: float, **dados_
     }
 
 
-
-# TESTES AUTOMÁTICOS (RODE O ARQUIVO DIRETO PARA TESTAR)
-# =========================================================================================================
 if __name__ == "__main__":
     try:
         print("--- TESTANDO PIX ---")
         res_pix = processar_pagamento("usuario@email.com", "PIX", 100.0)
-        print("✅ PIX Processado:", res_pix)
+        print("PIX Processado:", res_pix)
 
         print("\n--- TESTANDO CARTÃO ---")
         res_cartao = processar_pagamento(
@@ -163,7 +149,7 @@ if __name__ == "__main__":
             cvv="123", 
             parcelas=2
         )
-        print("✅ Cartão Processado:", res_cartao)
+        print("Cartão Processado:", res_cartao)
 
     except ValueError as err:
-        print("❌ Erro capturado:", err)
+        print("Erro capturado:", err)
