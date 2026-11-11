@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050d17">
+    <title>NÓRD — tecnologia para o seu ritmo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="CSS/style.css">
+    <script src="store.js" defer></script>
+</head>
+
+<body data-page="home" class="home-page">
+    <header class="site-header">
+        <a class="wordmark" href="index.html" aria-label="NÓRD, início">NÓRD<span>.</span></a>
+        <form class="store-search" role="search" onsubmit="return false">
+            <input type="search" placeholder="O que você está procurando?" aria-label="Buscar produtos"
+                data-product-search>
+            <button type="submit" aria-label="Buscar">⌕</button>
+        </form>
+        <div class="header-actions"><a class="text-action" data-account-link
+                href="login.html">Entrar<br><span>Cadastrar</span></a><a class="cart-link" href="carrinho.html"
+                aria-label="Abrir sacola">♧ <span class="cart-count" data-cart-count>0</span></a></div>
+    </header>
+    <div class="store-layout">
+        <aside class="store-sidebar">
+            <nav aria-label="Categorias da loja">
+                <a class="sidebar-link active" href="index.html"><span aria-hidden="true">⌂</span>Início</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">▱</span>Notebooks</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">▯</span>Smartphones</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">◉</span>Acessórios</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">▣</span>Monitores</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">⌨</span>Periféricos</a>
+                <a class="sidebar-link" href="#categorias"><span aria-hidden="true">⚙</span>Componentes</a>
+                <a class="sidebar-link" href="#catalogo"><span aria-hidden="true">◇</span>Ofertas</a>
+                <a class="sidebar-link" href="account.html"><span aria-hidden="true">◉</span>Conta</a>
+            </nav>
+        </aside>
+        <main class="home-content">
+            <section class="hero">
+                <div class="hero-art" role="img" aria-label="Setup com computador e periféricos"><img
+                        src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1600&q=85"
+                        alt="Notebook e equipamentos em uma mesa de trabalho"></div>
+                <div class="hero-copy">
+                    <p class="eyebrow">Tecnologia que te acompanha</p>
+                    <h1>Os melhores produtos de tecnologia, em um só lugar.</h1>
+                    <p class="hero-description">Notebooks, smartphones, acessórios e muito mais com qualidade, segurança
+                        e entrega rápida.</p>
+                    <a class="button button-blue" href="#catalogo">Confira as ofertas <span
+                            aria-hidden="true">→</span></a>
+                </div>
+                <div class="hero-dots" aria-hidden="true"><span class="selected"></span><span></span><span></span></div>
+            </section>
+            <section class="category-section" id="categorias" aria-label="Categorias em destaque">
+                <a class="category-card" href="#catalogo"><img
+                        src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80"
+                        alt="Teclado mecânico"><span>Setup</span></a>
+                <a class="category-card" href="#catalogo"><img
+                        src="https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=500&q=80"
+                        alt="Mouse para computador"><span>Periféricos</span></a>
+                <a class="category-card" href="#catalogo"><img
+                        src="https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80"
+                        alt="Headset"><span>Áudio</span></a>
+                <a class="category-card" href="#catalogo"><img
+                        src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=500&q=80"
+                        alt="Monitor"><span>Imagem</span></a>
+            </section>
+            <section class="catalog-section" id="catalogo">
+                <div class="section-heading">
+                    <h2>Produtos em destaque</h2><a href="#catalogo">Ver todos <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="product-grid" data-product-grid></div>
+            </section>
+            <section class="service-strip" aria-label="Benefícios da loja">
+                <div><span class="service-icon" aria-hidden="true">↗</span>
+                    <p><strong>Entrega rápida</strong><br>para todo o Brasil</p>
+                </div>
+                <div><span class="service-icon" aria-hidden="true">◇</span>
+                    <p><strong>Compra segura</strong><br>seus dados protegidos</p>
+                </div>
+                <div><span class="service-icon" aria-hidden="true">▤</span>
+                    <p><strong>Diversas formas de pagamento</strong><br>PIX, cartão e boleto</p>
+                </div>
+                <div><span class="service-icon" aria-hidden="true">◎</span>
+                    <p><strong>Atendimento especializado</strong><br>sempre que precisar</p>
+                </div>
+            </section>
+            <footer class="site-footer"><a class="wordmark" href="index.html">NÓRD<span>.</span></a><span>Feito para
+                    acompanhar seu ritmo.</span><span>© 2025 NÓRD STORE</span></footer>
+        </main>
+    </div>
+</body>
+
+</html>

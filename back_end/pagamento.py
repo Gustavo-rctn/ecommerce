@@ -95,43 +95,7 @@ def validar_boleto(valor: float) -> tuple[float, str]:
 
 
 def processar_pagamento(email: str, forma_pagamento: str, valor: float, **dados_adicionais) -> dict:
-    """Função principal que orquestra a validação e salva no banco de dados."""
-    
-    # Garante que a tabela exista antes de qualquer operação
-    inicializar_banco_pagamentos()
-    
-    forma = forma_pagamento.strip().upper()
-
-    if forma == "PIX":
-        valor_final, codigo = validar_pix(valor)
-        status = "Aprovado"
-
-    elif forma == "CARTAO":
-        numero_cartao = dados_adicionais.get("numero_cartao", "")
-        cvv = dados_adicionais.get("cvv", "")
-        parcelas = dados_adicionais.get("parcelas", 1)
-
-        valor_final, _, codigo = validar_cartao(numero_cartao, cvv, parcelas, valor)
-        status = "Aprovado"
-
-    elif forma == "BOLETO":
-        valor_final, codigo = validar_boleto(valor)
-        status = "Pendente"
-
-    else:
-        raise ValueError("Forma de pagamento inválida. Escolha entre PIX, CARTAO ou BOLETO.")
-
-    # Grava a transação validada no banco SQLite
-    salvar_pagamento_no_banco(email, valor_final, forma, status, codigo)
-
-    return {
-        "sucesso": True,
-        "email": email,
-        "forma_pagamento": forma,
-        "valor_final": valor_final,
-        "status": status,
-        "codigo_transacao": codigo
-    }
+    raise ValueError("Pagamentos simulados foram desativados. Use o checkout web com Mercado Pago.")
 
 
 if __name__ == "__main__":
