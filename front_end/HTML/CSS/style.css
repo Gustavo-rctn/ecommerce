@@ -253,6 +253,7 @@ h1, h2, p { margin-top: 0; }
 .field { display: grid; gap: 6px; }
 .field.full { grid-column: 1 / -1; }
 .field label { color: var(--text-label); font-size: 10px; font-weight: 700; }
+.field small { min-height: 14px; color: var(--muted); font-size: 10px; line-height: 1.4; }
 .payment-options { display: grid; gap: 8px; }
 .payment-option { min-height: 49px; display: flex; align-items: center; gap: 11px; padding: 0 13px; border: 1px solid var(--line); background: var(--white); cursor: pointer; font-size: 11px; }
 .payment-option:has(input:checked) { border-color: var(--blue); background: var(--accent-soft); }

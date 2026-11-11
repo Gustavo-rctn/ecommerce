@@ -86,6 +86,7 @@ let PRODUCTS = DEMO_PRODUCTS;
 const STORAGE_KEY = "nord-store-demo";
 const AVAILABLE_THEMES = ["light", "dark", "purple", "night-owl"];
 const money = (value) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+let cepLookupController = null;
 const readState = () => {
   try {
     return { cart: [], coupon: "", cep: "", user: null, registeredUser: null, theme: "dark", pendingPayment: null, completedOrder: null, demoOrder: null, checkoutKey: null, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
@@ -238,6 +239,8 @@ function addToCart(id, quantity = 1) {
     showToast(`Estoque disponível: ${product.stock} unidade(s).`);
     return;
   }
+  state.completedOrder = null;
+  state.demoOrder = null;
   if (item) item.quantity += quantity;
   else state.cart.push({ id: product.id, quantity });
   saveState();
@@ -505,6 +508,11 @@ function renderPaymentPending(pagamento) {
 function renderCheckout() {
   const container = document.querySelector("[data-checkout-page]");
   if (!container) return;
+  if (state.cart.length && (state.demoOrder || state.completedOrder)) {
+    state.demoOrder = null;
+    state.completedOrder = null;
+    saveState();
+  }
   if (state.demoOrder) {
     renderDemoConfirmation(state.demoOrder);
     return;
@@ -534,7 +542,7 @@ function renderCheckout() {
       <div class="field full" data-cpf-field><label for="customer-cpf">CPF do pagador</label><input id="customer-cpf" name="cpf" inputmode="numeric" maxlength="14" autocomplete="off" placeholder="000.000.000-00"></div>
     </div></section>
     <section class="form-section"><h2>02 / Entrega</h2><div class="field-grid">
-      <div class="field"><label for="customer-cep">CEP</label><input id="customer-cep" name="cep" inputmode="numeric" maxlength="9" required value="${escapeHtml(state.cep)}"></div>
+      <div class="field"><label for="customer-cep">CEP</label><input id="customer-cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" aria-describedby="customer-cep-status" required value="${escapeHtml(state.cep)}"><small id="customer-cep-status" data-cep-status role="status" aria-live="polite"></small></div>
       <div class="field"><label for="customer-city">Cidade</label><input id="customer-city" name="city" autocomplete="address-level2" required></div>
       <div class="field"><label for="customer-address">Rua</label><input id="customer-address" name="address" autocomplete="address-line1" required></div>
       <div class="field"><label for="customer-address-number">Número</label><input id="customer-address-number" name="addressNumber" autocomplete="address-line2" required></div>
@@ -574,6 +582,42 @@ function renderCheckout() {
     </section>
   </form>${renderSummary(true)}${paymentMode === "mercado-pago" ? `<p class="payment-security-note">Os dados do cartão são tokenizados pelo Mercado Pago e não são enviados nem armazenados neste site.</p>` : ""}`;
   updatePaymentFields();
+  if (state.cep.replace(/\D/g, "").length === 8) {
+    buscarEnderecoPorCep(state.cep);
+  }
+}
+
+async function buscarEnderecoPorCep(value) {
+  const cep = value.replace(/\D/g, "");
+  const input = document.querySelector("#customer-cep");
+  const status = document.querySelector("[data-cep-status]");
+  if (cepLookupController) cepLookupController.abort();
+  if (cep.length !== 8 || !input || !status) return;
+
+  const controller = new AbortController();
+  cepLookupController = controller;
+  status.textContent = "Buscando endereço...";
+  try {
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal: controller.signal });
+    if (!response.ok) throw new Error(`Consulta de CEP falhou (HTTP ${response.status}).`);
+    const address = await response.json();
+    if (controller.signal.aborted || input.value.replace(/\D/g, "") !== cep) return;
+    if (address.erro) {
+      status.textContent = "CEP não encontrado. Confira o número e preencha o endereço manualmente.";
+      return;
+    }
+
+    document.querySelector("#customer-address").value = address.logradouro || "";
+    document.querySelector("#customer-neighborhood").value = address.bairro || "";
+    document.querySelector("#customer-city").value = address.localidade || "";
+    document.querySelector("#customer-state").value = address.uf || "";
+    status.textContent = "Endereço preenchido. Confira os dados e informe o número.";
+  } catch (error) {
+    if (error.name === "AbortError") return;
+    if (!controller.signal.aborted && input.value.replace(/\D/g, "") === cep) {
+      status.textContent = "Não foi possível consultar o CEP. Preencha o endereço manualmente.";
+    }
+  }
 }
 
 let authMode = "login";
@@ -1095,6 +1139,13 @@ document.addEventListener("input", (event) => {
   if (event.target.matches("#customer-cep")) {
     state.cep = event.target.value.replace(/\D/g, "").slice(0, 8);
     saveState();
+    if (state.cep.length === 8) {
+      buscarEnderecoPorCep(state.cep);
+    } else {
+      if (cepLookupController) cepLookupController.abort();
+      const status = document.querySelector("[data-cep-status]");
+      if (status) status.textContent = "";
+    }
     const summary = document.querySelector("[data-checkout-page] .summary-panel");
     if (summary) {
       const replacement = document.createElement("div");
